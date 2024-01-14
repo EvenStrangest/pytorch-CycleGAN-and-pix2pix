@@ -4,6 +4,7 @@ import re
 import imageio
 import numpy as np
 from torch import tensor
+from torchvision import transforms
 
 from data.base_dataset import BaseDataset, get_params, get_transform
 from data.image_folder import make_dataset_by_pattern
@@ -96,12 +97,15 @@ class AlignedMultichannelDataset(BaseDataset):
             # B = A[0:1, ...]  # DEBUGGING!!!
 
         # apply corresponding transforms to A and B
-        # transform_params = get_params(self.opt, A.size)
+        # transform_params = get_params(self.opt, A.size()[-2:])
         # assert transform_params['crop_pos'] == (0, 0), "AlignedMultichannelDataset does not support cropping"
         # A_transform = get_transform(self.opt, transform_params, grayscale=(self.input_nc == 1))
         # B_transform = get_transform(self.opt, transform_params, grayscale=(self.output_nc == 1))
         # A = A_transform(A)
         # B = B_transform(B)
+        crop_params = transforms.RandomCrop.get_params(A, output_size=(self.opt.crop_size, self.opt.crop_size))
+        A = transforms.functional.crop(A, *crop_params)
+        B = transforms.functional.crop(B, *crop_params)
 
         # TODO: handle the various alignment modes
         return {'A': A, 'B': B, 'A_paths': A_paths[0], 'B_paths': B_paths[0]}

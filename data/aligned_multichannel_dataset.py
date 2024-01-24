@@ -62,7 +62,7 @@ class AlignedMultichannelDataset(BaseDataset):
         A_paths = sorted(make_dataset_by_pattern(self.dir_AB, self.opt.filename_re_pattern, opt.max_dataset_size))  # get image paths
         self.image_ids = [re.match(self.opt.filename_re_pattern, os.path.basename(path)).group(1) for path in A_paths]
 
-        print(f"Found {len(self.image_ids)} images in {self.dir_AB}"
+        print(f"Found {len(self.image_ids)} images in {self.dir_AB}")
 
         assert(self.opt.load_size >= self.opt.crop_size)   # crop_size should be smaller than the size of loaded image
 
